@@ -7,6 +7,7 @@ import numpy as np
 from cv2 import imread
 from skimage import img_as_float
 import time
+#from skimage.util import random_noise
 
 def im2patch(im, pch_size, stride=1):
     '''
@@ -82,14 +83,16 @@ def noise_estimate(im, pch_size=8):
 
 if __name__ == '__main__':
     im = imread('./lena.png')
-    im = img_as_float(im)
+    im = img_as_float(im) #Convert an image to floating point format, with values in [0, 1]. 
 
     noise_level = [5, 15, 20, 30, 40]
 
     for level in noise_level:
         sigma = level / 255
+        #im_noise = (random_noise(im, mode='gaussian', var=0.05**2)).astype(np.uint8) #Gaussian noise
 
-        im_noise = im + np.random.randn(*im.shape) * sigma
+        im_noise = im + np.random.randn(*im.shape) * sigma #Noise?
+        im_noise = np.clip(im_noise,0,1) #Values must be between 0 and 1.
 
         start = time.time()
         est_level = noise_estimate(im_noise, 8)
